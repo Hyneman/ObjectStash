@@ -37,6 +37,8 @@ namespace system\io
 	if(defined("OBJECT_STASH_AUTHORIZED") === false)
 		exit("Unauthorized Access.");
 
+	use InvalidArgumentException;
+
 	/**
 	 * Represents the XJson parser that implements the
 	 * ability to use comment lines within a JSON document.
