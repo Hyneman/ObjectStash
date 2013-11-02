@@ -6,7 +6,7 @@
 ////// Copyright © 2013 by Silent Byte.
 //////
 ////// Author: Rico Beti (rico.beti@silentbyte.com)
-////// Module: index.php
+////// Module: ObjectStash.php
 ////// 
 ////// Redistribution and use in source and binary forms, with or without
 ////// modification, are permitted provided that the following conditions are met:
@@ -32,11 +32,25 @@
 //////
 ////
 
+/**
+ * Represents the main class of ObjectStash.
+**/
+class ObjectStash
+{
+	#region ...Methods...
 
-include "ObjectStash.php";
 
-// Call the Main Entry Point.
-ObjectStash::Main();
+	/**
+	 * Initializes the ObjectStash System.
+	**/
+	public static function Main()
+	{
+		echo "Object Stash";
+	}
+
+
+	#end region
+} // class ObjectStash
 
 
 ?>
