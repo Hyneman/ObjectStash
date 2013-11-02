@@ -32,6 +32,11 @@
 //////
 ////
 
+define("OBJECT_STASH_AUTHORIZED", true);
+define("OBJECT_STASH_TIME", microtime(true));
+define("OBJECT_STASH_DIRECTORY", dirname(__FILE__));
+define("OBJECT_STASH_SEPARATOR", DIRECTORY_SEPARATOR);
+
 /**
  * Represents the main class of ObjectStash.
 **/
