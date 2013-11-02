@@ -8,5 +8,10 @@
 	"access" : {
 		"readable" : true,
 		"writeable" : true
+	},
+	"logging" : {
+		"enabled" : true,
+		"directory" : "./application/logs/",
+		"types" : ["critical", "warning", "notice", "debug"]
 	}
 }
