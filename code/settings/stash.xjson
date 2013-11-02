@@ -1,0 +1,12 @@
+//
+// --------------------------------
+// Object Stash Configuration File.
+// --------------------------------
+//
+{
+	"stash-name" : "Object Stash",
+	"access" : {
+		"readable" : true,
+		"writeable" : true
+	}
+}
