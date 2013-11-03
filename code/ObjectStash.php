@@ -44,18 +44,71 @@ require_once "system/php/AutoLoader.php";
 **/
 class ObjectStash
 {
+	#region ...Member Variables...
+
+
+	/**
+	 * Holds the instance of the class loader.
+	 * @var system\php\AutoLoader
+	**/
+	private $autoLoader;
+
+
+	#end region
+	#region ...Constructor...
+
+
+	/**
+	 * Protected Constructor.
+	 * It shall not be allowed for external code to create instances
+	 * because this is the main class that can only be instanciated once.
+	**/
+	protected function __construct()
+	{
+		//
+	}
+
+
+	#end region
 	#region ...Methods...
 
+
+	/**
+	 * Initializes the environment.
+	**/
+	private function initialize()
+	{
+		$this->autoLoader = new system\php\AutoLoader();
+		$this->autoLoader->register();
+	}
+
+	/**
+	 * Finalizes the execution and prepares to shutdown.
+	**/
+	private function finalize()
+	{
+		$this->autoLoader->unregister();
+		$this->autoLoader = null;
+	}
+
+	/**
+	 * Executes the system to handle requests.
+	**/
+	protected function execute()
+	{
+		echo "Object Stash";
+	}
 
 	/**
 	 * Initializes the ObjectStash System.
 	**/
 	public static function Main()
 	{
-		$auto = new system\php\AutoLoader();
-		$auto->register();
-		echo "Object Stash";
-		$auto->unregister();
+		$stash = new ObjectStash();
+
+		$stash->initialize();
+		$stash->execute();
+		$stash->finalize();
 	}
 
 
