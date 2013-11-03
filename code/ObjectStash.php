@@ -37,6 +37,8 @@ define("OBJECT_STASH_TIME", microtime(true));
 define("OBJECT_STASH_DIRECTORY", dirname(__FILE__));
 define("OBJECT_STASH_SEPARATOR", DIRECTORY_SEPARATOR);
 
+require_once "system/php/AutoLoader.php";
+
 /**
  * Represents the main class of ObjectStash.
 **/
@@ -50,7 +52,10 @@ class ObjectStash
 	**/
 	public static function Main()
 	{
+		$auto = new system\php\AutoLoader();
+		$auto->register();
 		echo "Object Stash";
+		$auto->unregister();
 	}
 
 
