@@ -1,0 +1,8 @@
+
+# Redirect Requests to Front Controller.
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	RewriteBase /stash/
+	RewriteRule . index.php [L]
+</IfModule>
+
