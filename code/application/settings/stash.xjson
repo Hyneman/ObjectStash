@@ -9,6 +9,11 @@
 		"readable" : true,
 		"writeable" : true
 	},
+	"database" : {
+		"connection" : "objectstash",
+		"user" : "root",
+		"password" : ""
+	},
 	"logging" : {
 		"enabled" : true,
 		"directory" : "./application/logs/",
