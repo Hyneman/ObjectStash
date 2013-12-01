@@ -35,7 +35,7 @@
 namespace system\io
 {
 	if(defined("OBJECT_STASH_AUTHORIZED") === false)
-		exit("Unauthorized Access.");
+		exit("UNAUTHORIZED ACCESS.");
 
 	use RuntimeException;
 
