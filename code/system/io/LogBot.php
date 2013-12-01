@@ -158,7 +158,7 @@ namespace system\io
 
 
 		#end region
-	} // class XJson
+	} // class LogBot
 } // namespace system\io
 
 
