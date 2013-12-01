@@ -38,7 +38,7 @@ namespace system\database
 		exit("UNAUTHORIZED ACCESS.");
 
 	use mysqli;
-	use RuntimeException;
+	use system\database\DatabaseException;
 
 	class DatabaseConnection
 	{
@@ -57,8 +57,8 @@ namespace system\database
 			$this->mysqli = new mysqli($host, $user, $password);
 			if($this->mysqli->connect_error !== null)
 			{
-				throw new RuntimeException("Database connection could not be established: "
-					. $this->mysqli->connect_error);
+				throw new DatabaseException("Database connection could not be established.",
+					$this->mysqli->connect_error);
 			}
 		}
 
@@ -70,7 +70,10 @@ namespace system\database
 		public function select($database)
 		{
 			if($this->mysqli->select_db($database) === false)
-				throw new RuntimeException("The specified database could not be selected.");
+			{
+				throw new RuntimeException("The specified database could not be selected.",
+					$this->mysqli->error);
+			}
 		}
 
 		public function close()
