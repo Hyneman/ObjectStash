@@ -80,8 +80,8 @@ namespace system\database
 
 
 		#end region
-	} // class MySqlDatabaseConnection
-} // namespace system\io
+	} // class DatabaseConnection
+} // namespace system\database
 
 
 ?>
