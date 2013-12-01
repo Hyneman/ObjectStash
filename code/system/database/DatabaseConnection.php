@@ -67,6 +67,12 @@ namespace system\database
 		#region ...Methods...
 
 
+		public function select($database)
+		{
+			if($this->mysqli->select_db($database) === false)
+				throw new RuntimeException("The specified database could not be selected.");
+		}
+
 		public function close()
 		{
 			$this->mysqli->close();
