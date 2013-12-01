@@ -55,6 +55,7 @@ namespace system\requests
 		{
 			$this->request = $request;
 			$this->uri = self::parseUri($request);
+			$this->queries = self::parseQueries($request);
 		}
 
 
@@ -72,9 +73,25 @@ namespace system\requests
 			return substr($uri, 0, $queryIndex);
 		}
 
+		private static function parseQueries($request)
+		{
+			$array = array();
+			parse_str($request["REQUEST_URI"], $array);
+
+			return $array;
+		}
+
 		public function getUri()
 		{
 			return $this->uri;
+		}
+
+		public function getQuery($query)
+		{
+			if(isset($this->queries[$query]) === false)
+				return "";
+
+			return $this->queries[$query];
 		}
 
 		public function getHeader($variable)
