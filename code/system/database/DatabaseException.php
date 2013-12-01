@@ -68,6 +68,17 @@ namespace system\database
 
 
 		#end region
+		#region ...Overrides...
+
+
+		public function __toString()
+		{
+			return __CLASS__ . ": " . $this->getMessage() . " "
+				. "(" . $this->getDatabaseMessage() . ")";
+		}
+
+
+		#end region
 	} // class DatabaseException extends Exception
 } // namespace system\database
 
