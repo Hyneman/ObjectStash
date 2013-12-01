@@ -43,6 +43,8 @@ namespace system\requests
 
 
 		private $request;
+		private $uri;
+		private $queries;
 
 
 		#end region
@@ -52,22 +54,27 @@ namespace system\requests
 		public function __construct($request)
 		{
 			$this->request = $request;
+			$this->uri = self::parseUri($request);
 		}
 
 
 		#end region
 		#region ...Methods...
 
-
-		public function getRequestUri()
+		private static function parseUri($request)
 		{
-			$uri = $this->request["REQUEST_URI"];
+			$uri = $request["REQUEST_URI"];
 			$queryIndex = strpos($uri, "?");
 
 			if($queryIndex === false)
 				return $uri;
 
 			return substr($uri, 0, $queryIndex);
+		}
+
+		public function getUri()
+		{
+			return $this->uri;
 		}
 
 		public function getHeader($variable)
