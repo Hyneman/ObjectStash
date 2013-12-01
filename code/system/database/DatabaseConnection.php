@@ -39,6 +39,7 @@ namespace system\database
 
 	use mysqli;
 	use system\database\DatabaseException;
+	use system\security\SecureHash;
 
 	class DatabaseConnection
 	{
@@ -79,6 +80,27 @@ namespace system\database
 		public function close()
 		{
 			$this->mysqli->close();
+		}
+
+		public function createUser($login, $password)
+		{
+			$secureHash = new SecureHash();
+
+			$salt = $secureHash->generate();
+			$access = $secureHash->generate();
+			$hash = $secureHash->compute($password . $salt);
+
+			$statement = $this->mysqli->prepare(
+				"INSERT INTO `users` (login, password, salt, access)"
+					. " " . "VALUES (?, ?, ?, ?);");
+
+			$statement->bind_param("ssss",
+				$login,
+				$hash,
+				$salt,
+				$access);
+			
+			$statement->execute();
 		}
 
 
