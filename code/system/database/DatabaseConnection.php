@@ -103,6 +103,25 @@ namespace system\database
 			$statement->execute();
 		}
 
+		public function createObject($container, $object, $mime, $tags, $reference)
+		{
+			$statement = $this->mysqli->prepare(
+				"INSERT INTO `objects` (container_id, name, mime, tags, reference)"
+					. " " . "VALUES ((SELECT id FROM `containers` WHERE name=?), ?, ?, ?, ?);");
+
+			if($this->mysqli->error)
+				die($this->mysqli->error);
+
+			$statement->bind_param("sssss",
+				$container,
+				$object,
+				$mime,
+				$tags,
+				$reference);
+			
+			$statement->execute();
+		}
+
 
 		#end region
 	} // class DatabaseConnection
