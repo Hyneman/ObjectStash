@@ -37,6 +37,8 @@ namespace system\requests
 	if(defined("OBJECT_STASH_AUTHORIZED") === false)
 		exit("UNAUTHORIZED ACCESS.");
 
+	use system\security\SecureHash;
+
 	class RequestBroker
 	{
 		#region ...Member Variables...
@@ -101,6 +103,27 @@ namespace system\requests
 				return "";
 
 			return $this->request[$variable];
+		}
+
+		public function receiveFile()
+		{
+			if(isset($_FILES['file']['tmp_name']) === false)
+				return false;
+
+			$filename = $_FILES['file']['tmp_name'];
+			if(is_uploaded_file($filename) === false)
+				return false;
+
+			$hash = (new SecureHash())->computeFile($filename);
+			if($hash === false)
+				return false;
+
+			// TODO: Replace hard coded filename by definition from settings file.
+			// If the same file already exist it must not be replaced.
+			if(file_exists("./application/objects/" . $hash) === true)
+				return true;
+
+			return move_uploaded_file($filename, "./application/objects/" . $hash);
 		}
 
 
