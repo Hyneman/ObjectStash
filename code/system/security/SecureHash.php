@@ -58,6 +58,11 @@ namespace system\security
 			return sha1($input);
 		}
 
+		public function computeFile($filename)
+		{
+			return sha1_file($filename, false);
+		}
+
 		public function generate()
 		{
 			// TODO: Replace by more secure key generation algorithm.
