@@ -88,6 +88,11 @@ namespace system\requests
 			return $this->uri;
 		}
 
+		public function getMethod()
+		{
+			return $this->request["REQUEST_METHOD"];
+		}
+
 		public function getQuery($query)
 		{
 			if(isset($this->queries[$query]) === false)
