@@ -82,7 +82,26 @@ namespace system\requests
 
 		private function handleGet()
 		{
-			header("HTTP/1.1 501 Not Implemented");
+			$path = explode("/", $this->broker->getUri());
+			$container = $path[0];
+			$object = (isset($path[1]) === true ? $path[1] : null);
+
+			if($object === null)
+			{
+				$array = $this->database->getObjectList($container);
+				echo json_encode($array);
+			}
+			else
+			{
+				$reference = $this->database->getObjectFileName($container, $object);
+				if($reference === null)
+				{
+					header("HTTP/1.1 404 Not Found");
+					return false;
+				}
+
+				readfile("./application/objects/" . $reference);
+			}
 		}
 
 		private function handlePost()

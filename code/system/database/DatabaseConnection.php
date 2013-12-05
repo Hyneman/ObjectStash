@@ -176,6 +176,55 @@ namespace system\database
 				throw new DatabaseException("Object insertion statement failed.", $this->mysqli->error);
 		}
 
+		public function getObjectList($container)
+		{
+			$statement = $this->mysqli->prepare(
+				"SELECT name FROM `objects` \n"
+					. "WHERE container_id=(SELECT id FROM `containers` WHERE name=?);");
+
+			if($this->mysqli->error)
+				throw new DatabaseException("Object list could not be created.", $this->mysqli->error);
+
+			$statement->bind_param("s",
+				$container);
+
+			if($statement->execute() === false)
+				throw new DatabaseException("Object list could not be created.", $this->mysqli->error);
+
+			$statement->bind_result($name);
+			$array = array();
+			while($statement->fetch() === true)
+			{
+				$array[] = $name;
+			}
+
+			return $array;
+		}
+
+		public function getObjectFilename($container, $object)
+		{
+			$statement = $this->mysqli->prepare(
+				"SELECT reference FROM `objects` \n"
+					. "WHERE container_id=(SELECT id FROM `containers` WHERE name=?)\n"
+					. "AND name=? LIMIT 1");
+
+			if($this->mysqli->error)
+				throw new DatabaseException("Object filename could not be determined.", $this->mysqli->error);
+
+			$statement->bind_param("ss",
+				$container,
+				$object);
+
+			if($statement->execute() === false)
+				throw new DatabaseException("Object filename could not be determined.", $this->mysqli->error);
+
+			$statement->bind_result($reference);
+			if($statement->fetch() === false)
+				return null;
+
+			return $reference;
+		}
+
 
 		#end region
 	} // class DatabaseConnection
