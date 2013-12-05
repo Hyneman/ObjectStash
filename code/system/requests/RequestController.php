@@ -37,6 +37,8 @@ namespace system\requests
 	if(defined("OBJECT_STASH_AUTHORIZED") === false)
 		exit("UNAUTHORIZED ACCESS.");
 
+	use system\io\XJson;
+	use system\database\DatabaseConnection;
 	use system\requests\RequestBroker;
 
 	class RequestController
@@ -44,7 +46,9 @@ namespace system\requests
 		#region ...Member Variables...
 
 
+		private $settings;
 		private $broker;
+		private $database;
 
 
 		#end region
@@ -53,7 +57,13 @@ namespace system\requests
 
 		public function __construct()
 		{
+			$this->settings = XJson::fromFile("./application/settings/stash.xjson");
 			$this->broker = new RequestBroker($_SERVER);
+			$this->database = new DatabaseConnection($this->settings->getDom()->database->host,
+				$this->settings->getDom()->database->user,
+				$this->settings->getDom()->database->password);
+
+			$this->database->select($this->settings->getDom()->database->connection);
 		}
 
 
@@ -82,7 +92,31 @@ namespace system\requests
 
 		private function handlePut()
 		{
-			header("HTTP/1.1 501 Not Implemented");
+			list($container, $object) = explode("/", $this->broker->getUri());
+
+			$login = $this->broker->getHeader("X-OBJECTSTASH-LOGIN");
+			$password = $this->broker->getHeader("X-OBJECTSTASH-PASSWORD");
+
+			if($this->database->validCredentials($login, $password) === false)
+			{
+				header("HTTP/1.1 401 Unauthorized");
+				return false;
+			}
+
+			if($this->database->objectExists($container, $object) === true)
+			{
+				header("HTTP/1.1 409 Conflict");
+				return false;
+			}
+
+			$hash = $this->broker->receiveObject();
+			if($hash === false)
+			{
+				header("HTTP/1.1 409 Conflict");
+				return false;
+			}
+
+			$this->database->createObject($container, $object, "", "", $hash);
 		}
 
 		private function handleDelete()
@@ -113,7 +147,7 @@ namespace system\requests
 				case "DELETE":
 					$this->handleDelete();
 					break;
-					
+
 				default:
 					$this->errorUnknownMethod();
 					break;

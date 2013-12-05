@@ -85,7 +85,7 @@ namespace system\requests
 
 		public function getUri()
 		{
-			return $this->uri;
+			return trim($this->uri, "/");
 		}
 
 		public function getMethod()
@@ -110,25 +110,26 @@ namespace system\requests
 			return $this->request[$variable];
 		}
 
-		public function receiveFile()
+		public function receiveObject()
 		{
-			if(isset($_FILES['file']['tmp_name']) === false)
+			$tmp = tempnam("./application/objects/", "tmp");
+			if(copy("php://input", $tmp) === false)
 				return false;
 
-			$filename = $_FILES['file']['tmp_name'];
-			if(is_uploaded_file($filename) === false)
-				return false;
-
-			$hash = (new SecureHash())->computeFile($filename);
-			if($hash === false)
-				return false;
-
-			// TODO: Replace hard coded filename by definition from settings file.
-			// If the same file already exist it must not be replaced.
+			$hash = (new SecureHash())->computeFile($tmp);
 			if(file_exists("./application/objects/" . $hash) === true)
-				return true;
+			{
+				unlink($tmp);
+				return $hash;
+			}
 
-			return move_uploaded_file($filename, "./application/objects/" . $hash);
+			if(rename($tmp, "./application/objects/" . $hash) === false)
+			{
+				unlink($tmp);
+				return false;
+			}
+
+			return $hash;
 		}
 
 

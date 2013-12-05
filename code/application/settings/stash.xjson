@@ -10,6 +10,7 @@
 		"writeable" : true
 	},
 	"database" : {
+		"host" : "localhost",
 		"connection" : "objectstash",
 		"user" : "root",
 		"password" : ""

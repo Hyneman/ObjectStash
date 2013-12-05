@@ -82,6 +82,32 @@ namespace system\database
 			$this->mysqli->close();
 		}
 
+		public function validCredentials($login, $password)
+		{
+			$statement = $this->mysqli->prepare(
+				"SELECT password, salt FROM `users` \n"
+					. "WHERE login=?\n"
+					. "LIMIT 1;");
+
+			if($this->mysqli->error)
+				throw new DatabaseException("Status of object could not be determined.", $this->mysqli->error);
+
+			$statement->bind_param("s",
+				$login);
+
+			if($statement->execute() === false)
+				throw new DatabaseException("Status of object could not be determined.", $this->mysqli->error);
+
+			$statement->bind_result($hash, $salt);
+			if($statement->fetch() === false)
+				return false;
+
+			if($hash === sha1($password . $salt))
+				return true;
+
+			return false;
+		}
+
 		public function createUser($login, $password)
 		{
 			$secureHash = new SecureHash();
@@ -89,6 +115,9 @@ namespace system\database
 			$salt = $secureHash->generate();
 			$access = $secureHash->generate();
 			$hash = $secureHash->compute($password . $salt);
+
+			if($this->mysqli->error)
+				throw new DatabaseException("Object could not be created.", $this->mysqli->error);
 
 			$statement = $this->mysqli->prepare(
 				"INSERT INTO `users` (login, password, salt, access)"
@@ -100,7 +129,31 @@ namespace system\database
 				$salt,
 				$access);
 			
-			$statement->execute();
+			if($statement->execute() === false)
+				throw new DatabaseException("User creation statement failed.", $this->mysqli->error);
+		}
+
+		public function objectExists($container, $object)
+		{
+			$statement = $this->mysqli->prepare(
+				"SELECT * FROM `objects` \n"
+					. "WHERE container_id=(SELECT id FROM `containers` WHERE name=?)\n"
+					. "AND name=? LIMIT 1;");
+
+			if($this->mysqli->error)
+				throw new DatabaseException("Status of object could not be determined.", $this->mysqli->error);
+
+			$statement->bind_param("ss",
+				$container,
+				$object);
+
+			if($statement->execute() === false)
+				throw new DatabaseException("Status of object could not be determined.", $this->mysqli->error);
+
+			if($statement->fetch() === true)
+				return true;
+
+			return false;
 		}
 
 		public function createObject($container, $object, $mime, $tags, $reference)
@@ -110,7 +163,7 @@ namespace system\database
 					. " " . "VALUES ((SELECT id FROM `containers` WHERE name=?), ?, ?, ?, ?);");
 
 			if($this->mysqli->error)
-				die($this->mysqli->error);
+				throw new DatabaseException("Object could not be created.", $this->mysqli->error);
 
 			$statement->bind_param("sssss",
 				$container,
@@ -119,7 +172,8 @@ namespace system\database
 				$tags,
 				$reference);
 			
-			$statement->execute();
+			if($statement->execute() === false)
+				throw new DatabaseException("Object insertion statement failed.", $this->mysqli->error);
 		}
 
 

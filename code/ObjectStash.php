@@ -96,7 +96,15 @@ class ObjectStash
 	**/
 	protected function execute()
 	{
-		echo "Object Stash";
+		try
+		{
+			$controller = new system\requests\RequestController();
+			$controller->handleRequest();
+		}
+		catch(Exception $e)
+		{
+			header("HTTP/1.1 500 Internal Server Error");
+		}
 	}
 
 	/**
