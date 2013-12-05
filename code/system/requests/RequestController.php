@@ -89,7 +89,8 @@ namespace system\requests
 			if($object === null)
 			{
 				$array = $this->database->getObjectList($container);
-				echo json_encode($array);
+				foreach ($array as &$line)
+					echo "$line\n";
 			}
 			else
 			{

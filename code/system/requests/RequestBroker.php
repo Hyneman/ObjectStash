@@ -116,7 +116,8 @@ namespace system\requests
 			if(copy("php://input", $tmp) === false)
 				return false;
 
-			$hash = (new SecureHash())->computeFile($tmp);
+			$secure = new SecureHash();
+			$hash = $secure->computeFile($tmp);
 			if(file_exists("./application/objects/" . $hash) === true)
 			{
 				unlink($tmp);

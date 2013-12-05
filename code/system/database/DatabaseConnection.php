@@ -72,7 +72,7 @@ namespace system\database
 		{
 			if($this->mysqli->select_db($database) === false)
 			{
-				throw new RuntimeException("The specified database could not be selected.",
+				throw new DatabaseException("The specified database could not be selected.",
 					$this->mysqli->error);
 			}
 		}
