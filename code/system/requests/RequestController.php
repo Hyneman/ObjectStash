@@ -113,15 +113,6 @@ namespace system\requests
 		{
 			list($container, $object) = explode("/", $this->broker->getUri());
 
-			$login = $this->broker->getHeader("X-OBJECTSTASH-LOGIN");
-			$password = $this->broker->getHeader("X-OBJECTSTASH-PASSWORD");
-
-			if($this->database->validCredentials($login, $password) === false)
-			{
-				header("HTTP/1.1 401 Unauthorized");
-				return false;
-			}
-
 			if($this->database->objectExists($container, $object) === true)
 			{
 				header("HTTP/1.1 409 Conflict");
@@ -145,6 +136,15 @@ namespace system\requests
 
 		public function handleRequest()
 		{
+			$login = $this->broker->getHeader("X-OBJECTSTASH-LOGIN");
+			$password = $this->broker->getHeader("X-OBJECTSTASH-PASSWORD");
+
+			if($this->database->validCredentials($login, $password) === false)
+			{
+				header("HTTP/1.1 401 Unauthorized");
+				return false;
+			}
+
 			switch(strtoupper($this->broker->getMethod()))
 			{
 				case "HEAD":
