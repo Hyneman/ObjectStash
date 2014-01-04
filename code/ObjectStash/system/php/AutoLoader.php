@@ -6,7 +6,7 @@
 ////// Copyright © 2013 by Silent Byte.
 //////
 ////// Author: Rico Beti (rico.beti@silentbyte.com)
-////// Module: system.database.DatabaseException.php
+////// Module: system.php.AutoLoader.php
 ////// 
 ////// Redistribution and use in source and binary forms, with or without
 ////// modification, are permitted provided that the following conditions are met:
@@ -32,28 +32,39 @@
 //////
 ////
 
-namespace system\database
+namespace system\php
 {
 	if(defined("OBJECT_STASH_AUTHORIZED") === false)
 		exit("UNAUTHORIZED ACCESS.");
 
-	use Exception;
+	use RuntimeException;
 
-	class DatabaseException extends Exception
+	/**
+	 * Loads classes automatically when they are used the first time.
+	 * The AutoLoader class implements lazy class loading with namespace support.
+	 **/
+	class AutoLoader
 	{
 		#region ...Member Variables...
 
 
-		private $databaseMessage;
+		/**
+		 * Indicates whether the class loader has registered itself.
+		 * @var boolean
+		 **/
+		private $registered;
 
 
 		#end region
 		#region ...Constructor...
 
-		public function __construct($message, $databaseMessage, $code = 0, Exception $inner = null)
+
+		/**
+		 * Default Constructor.
+		 **/
+		public function __construct()
 		{
-			$this->databaseMessage = $databaseMessage;
-			parent::__construct($message, $code, $inner);
+			$this->registered = false;
 		}
 
 
@@ -61,26 +72,58 @@ namespace system\database
 		#region ...Methods...
 
 
-		public function getDatabaseMessage()
+		/**
+		 * The actual auto-load handler that calls 'require_once' for
+		 * each unknown class that needs to be registered.
+		 *
+		 * @param string $class Name of the class.
+		 *
+		 * @return boolean Returns 'true' if a file has been included, 'false' otherwise.
+		 **/
+		protected function autoloadHandler($class)
 		{
-			return $this->databaseMessage;
+			$filename = str_replace("\\", DIRECTORY_SEPARATOR, $class) . ".php";
+			if(file_exists($filename) === false)
+				return false;
+
+			/** @noinspection PhpIncludeInspection */
+			require_once($filename);
+			return true;
+		}
+
+		/**
+		 * Registers the class loader.
+		 * @throws RuntimeException Will be thrown if the auto-load handler could not be registered.
+		 **/
+		public function register()
+		{
+			if($this->registered === true)
+				return;
+
+			if(spl_autoload_register(array($this, "autoloadHandler"), false) === true)
+				$this->registered = true;
+			else
+				throw new RuntimeException("The auto-load handler could not be registered.");
+		}
+
+		/**
+		 * Unregisters the class loader.
+		 * @throws RuntimeException Will be thrown if the auto-load handler could not be unregistered.
+		 **/
+		public function unregister()
+		{
+			if($this->registered === false)
+				return;
+
+			if(spl_autoload_unregister(array($this, "autoloadHandler")) === false)
+				throw new RuntimeException("The auto-load handler could not be unregistered.");
+
+			$this->registered = false;
 		}
 
 
 		#end region
-		#region ...Overrides...
-
-
-		public function __toString()
-		{
-			return __CLASS__ . ": " . $this->getMessage() . " "
-				. "(" . $this->getDatabaseMessage() . ")";
-		}
-
-
-		#end region
-	} // class DatabaseException extends Exception
-} // namespace system\database
-
+	} // class AutoLoader
+} // namespace system\php
 
 ?>

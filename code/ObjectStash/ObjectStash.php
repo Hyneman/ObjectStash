@@ -6,7 +6,7 @@
 ////// Copyright © 2013 by Silent Byte.
 //////
 ////// Author: Rico Beti (rico.beti@silentbyte.com)
-////// Module: system.security.SecureHash.php
+////// Module: ObjectStash.php
 ////// 
 ////// Redistribution and use in source and binary forms, with or without
 ////// modification, are permitted provided that the following conditions are met:
@@ -32,47 +32,95 @@
 //////
 ////
 
-namespace system\security
+define("OBJECT_STASH_AUTHORIZED", true);
+define("OBJECT_STASH_TIME", microtime(true));
+define("OBJECT_STASH_DIRECTORY", dirname(__FILE__));
+define("OBJECT_STASH_SEPARATOR", DIRECTORY_SEPARATOR);
+
+require_once "system/php/AutoLoader.php";
+
+/**
+ * Represents the main class of ObjectStash.
+ **/
+class ObjectStash
 {
-	if(defined("OBJECT_STASH_AUTHORIZED") === false)
-		exit("UNAUTHORIZED ACCESS.");
+	#region ...Member Variables...
 
-	class SecureHash
+
+	/**
+	 * Holds the instance of the class loader.
+	 * @var system\php\AutoLoader
+	 **/
+	private $autoLoader;
+
+
+	#end region
+	#region ...Constructor...
+
+
+	/**
+	 * Protected Constructor.
+	 * It shall not be allowed for external code to create instances
+	 * because this is the main class that can only be instantiated once.
+	 **/
+	protected function __construct()
 	{
-		#region ...Constructor...
+		//
+	}
 
 
-		public function __construct()
+	#end region
+	#region ...Methods...
+
+
+	/**
+	 * Initializes the environment.
+	 **/
+	private function initialize()
+	{
+		$this->autoLoader = new system\php\AutoLoader();
+		$this->autoLoader->register();
+	}
+
+	/**
+	 * Finalizes the execution and prepares to shutdown.
+	 **/
+	private function finalize()
+	{
+		$this->autoLoader->unregister();
+		$this->autoLoader = null;
+	}
+
+	/**
+	 * Executes the system to handle requests.
+	 **/
+	protected function execute()
+	{
+		try
 		{
-			//
+			// System Processes.
 		}
-
-
-		#end region
-		#region ...Methods...
-
-
-		public function compute($input)
+		catch(Exception $e)
 		{
-			// TODO: Replace by secure hashing algorithm.
-			return sha1($input);
+			header("HTTP/1.1 500 Internal Server Error");
 		}
+	}
 
-		public function computeFile($filename)
-		{
-			return sha1_file($filename, false);
-		}
+	/**
+	 * Initializes the ObjectStash System.
+	 **/
+	public static function Main()
+	{
+		$stash = new ObjectStash();
 
-		public function generate()
-		{
-			// TODO: Replace by more secure key generation algorithm.
-			return $this->compute(uniqid(mt_rand(), true));
-		}
+		$stash->initialize();
+		$stash->execute();
+		$stash->finalize();
+	}
 
 
-		#end region
-	} // class SecureHash
-} // namespace system\security
+	#end region
+} // class ObjectStash
 
 
 ?>
