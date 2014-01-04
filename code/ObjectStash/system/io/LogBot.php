@@ -37,6 +37,7 @@ namespace system\io
 	if(defined("OBJECT_STASH_AUTHORIZED") === false)
 		exit("UNAUTHORIZED ACCESS.");
 
+	use Exception;
 	use RuntimeException;
 
 	/**
@@ -140,9 +141,22 @@ namespace system\io
 
 		/**
 		 * Writes the specified error message into the log file.
+		 *
+		 * @param String $message Message to be written.
+		 * @param Exception $exception Exception that caused the error.
+		 *
+		 * @return boolean Returns 'true' on success, 'false' otherwise.
 		 **/
-		public function error($message)
+		public function error($message, Exception $exception = null)
 		{
+			if($exception !== null)
+			{
+				$message .= " EXCEPTION in '" . $exception->getFile() . "'"
+					. " on line '" . $exception->getLine() ."'."
+					. " " . $exception->getMessage()
+					. " TRACE " . $exception->getTraceAsString();
+			}
+
 			return $this->raw("error", $message);
 		}
 
