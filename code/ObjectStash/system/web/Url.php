@@ -129,6 +129,17 @@ namespace system\web
 			return $this->getComponent("fragment");
 		}
 
+		public function isAbsolute()
+		{
+			if($this->getScheme() === "")
+				return false;
+
+			if($this->getHost() === "")
+				return false;
+
+			return true;
+		}
+
 
 		#end region
 	} // class Url
