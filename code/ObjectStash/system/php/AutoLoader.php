@@ -82,6 +82,7 @@ namespace system\php
 		 **/
 		protected function autoloadHandler($class)
 		{
+			// Replace namespace separator with directory separator.
 			$filename = str_replace("\\", DIRECTORY_SEPARATOR, $class) . ".php";
 			if(file_exists($filename) === false)
 				return false;
@@ -100,7 +101,7 @@ namespace system\php
 			if($this->registered === true)
 				return;
 
-			if(spl_autoload_register(array($this, "autoloadHandler"), false) === true)
+			if(spl_autoload_register([$this, "autoloadHandler"], false) === true)
 				$this->registered = true;
 			else
 				throw new RuntimeException("The auto-load handler could not be registered.");
@@ -115,7 +116,7 @@ namespace system\php
 			if($this->registered === false)
 				return;
 
-			if(spl_autoload_unregister(array($this, "autoloadHandler")) === false)
+			if(spl_autoload_unregister([$this, "autoloadHandler"]) === false)
 				throw new RuntimeException("The auto-load handler could not be unregistered.");
 
 			$this->registered = false;
