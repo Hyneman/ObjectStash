@@ -6,7 +6,7 @@
 ////// Copyright © 2013 by Silent Byte.
 //////
 ////// Author: Rico Beti (rico.beti@silentbyte.com)
-////// Module: system.requests.RequestController.php
+////// Module: system.requests.RequestHandler.php
 ////// 
 ////// Redistribution and use in source and binary forms, with or without
 ////// modification, are permitted provided that the following conditions are met:
@@ -41,7 +41,7 @@ namespace system\requests
 	use system\database\DatabaseConnection;
 	use system\requests\RequestBroker;
 
-	class RequestController
+	class RequestHandler
 	{
 		#region ...Member Variables...
 
@@ -176,7 +176,7 @@ namespace system\requests
 
 
 		#end region
-	} // class RequestController
+	} // class RequestHandler
 } // namespace system\requests
 
 

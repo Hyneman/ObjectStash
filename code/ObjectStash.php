@@ -98,8 +98,8 @@ class ObjectStash
 	{
 		try
 		{
-			$controller = new system\requests\RequestController();
-			$controller->handleRequest();
+			$handler = new system\requests\RequestHandler();
+			$handler->handleRequest();
 		}
 		catch(Exception $e)
 		{
