@@ -71,16 +71,22 @@ namespace system\io
 			return self::$instance;
 		}
 
-		public function setLogDirectory($path)
+		public function setLogFileName($filename)
 		{
-			$this->logger = new LogBot($path . DIRECTORY_SEPARATOR
-				. date("Y-m-d H:i:s") . ".log");
+			$this->logger = new LogBot($filename);
 		}
 
+		/**
+		 * Gets the LogBot object that can be used to write log entries.
+		 * Note that the returned object changes if the log filename has been changed.
+		 *
+		 * @throws RuntimeException Will be thrown if the log filename has not been specified.
+		 * @return LogBot Returns a LogBot object.
+		 */
 		public function getLogger()
 		{
 			if($this->logger === null)
-				throw new RuntimeException("Target directory for log files has not been set.");
+				throw new RuntimeException("Log filename has not been specified.");
 
 			return $this->logger;
 		}

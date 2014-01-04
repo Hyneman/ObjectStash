@@ -39,6 +39,8 @@ define("OBJECT_STASH_SEPARATOR", DIRECTORY_SEPARATOR);
 
 require_once "system/php/AutoLoader.php";
 
+use system\io\ServerLog;
+
 /**
  * Represents the main class of ObjectStash.
  **/
@@ -98,11 +100,12 @@ class ObjectStash
 	{
 		try
 		{
-			// System Processes.
+			ServerLog::instance()->setLogFileName("./application/logs/" . date("Y-m-d") . ".log");
 		}
 		catch(Exception $e)
 		{
 			header("HTTP/1.1 500 Internal Server Error");
+			ServerLog::instance()->getLogger()->error("Unhandled Exception", $e);
 		}
 	}
 
