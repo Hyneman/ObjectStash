@@ -67,7 +67,7 @@ namespace system\io
 		private function __construct($json)
 		{
 			$this->dom = json_decode($json);
-			if($this->dom === null)
+			if(json_last_error() !== JSON_ERROR_NONE)
 				throw new InvalidArgumentException("XJson could not be parsed.");
 		}
 
