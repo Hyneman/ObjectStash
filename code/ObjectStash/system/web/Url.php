@@ -76,7 +76,56 @@ namespace system\web
 		#region ...Methods...
 
 
-		private function getComponent($component)
+		private static function buildFromComponents(array $components)
+		{
+			$url = "";
+
+			if(isset($components["scheme"]) === true)
+			{
+				$scheme = $components["scheme"];
+				$url .= $scheme . ":";
+			}
+
+			if(isset($components["host"]) === true)
+			{
+				$url .= "//";
+				if(isset($components["user"]) === true)
+				{
+					$url .= $components["user"];
+					if(isset($components["pass"]) === true)
+						$url .= ":" . $components["pass"];
+
+					$url .= "@";
+				}
+
+				$url .= $components["host"];
+			}
+
+			if(isset($components["path"]) === true
+				&& $components["path"] !== ""
+			)
+			{
+				if($url !== ""
+					&& $components["path"] !== "/"
+					&& substr($url, -1) !== "/"
+				)
+				{
+					$url .= "/";
+				}
+
+				$url .= $components["path"];
+			}
+
+			if(isset($parts["query"]) === true)
+				$url .= "?" . $parts["query"];
+
+			if(isset($parts["fragment"]) === true)
+				$url .= "#" . $parts["fragment"];
+
+			return $url;
+		}
+
+		function getComponent($component)
 		{
 			if(isset($this->components[$component]) === true)
 				return $this->components[$component];
@@ -138,6 +187,30 @@ namespace system\web
 				return false;
 
 			return true;
+		}
+
+		public function appendPath($path)
+		{
+			$components = $this->components;
+			if(isset($components["path"]) === false)
+				$components["path"] = trim($path, "/");
+			else
+			{
+				$components["path"] = rtrim($components["path"], "/")
+					. ltrim($path, "/");
+			}
+
+			return new Url(self::buildFromComponents($components));
+		}
+
+
+		#end region
+		#region ...Magic Methods...
+
+
+		public function __toString()
+		{
+			return $this->getUrl();
 		}
 
 
