@@ -191,7 +191,7 @@ namespace system\database
 				throw new DatabaseException("Object list could not be created.", $this->mysqli->error);
 
 			$statement->bind_result($name);
-			$array = array();
+			$array = [];
 			while($statement->fetch() === true)
 			{
 				$array[] = $name;
