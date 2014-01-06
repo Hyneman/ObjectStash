@@ -1,0 +1,2 @@
+# Deny Access to Configuration Files.
+deny from all

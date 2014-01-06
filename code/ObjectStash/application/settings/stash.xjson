@@ -1,0 +1,23 @@
+//
+// --------------------------------
+// Object Stash Configuration File.
+// --------------------------------
+//
+{
+	"stash-name" : "Object Stash",
+	"access" : {
+		"readable" : true,
+		"writeable" : true
+	},
+	"database" : {
+		"host" : "localhost",
+		"connection" : "objectstash",
+		"user" : "root",
+		"password" : ""
+	},
+	"logging" : {
+		"enabled" : true,
+		"directory" : "./application/logs/",
+		"types" : ["critical", "warning", "notice", "debug"]
+	}
+}
